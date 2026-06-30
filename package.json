@@ -1,48 +1,72 @@
 {
-	"name": "browser.js",
-	"version": "1.0.1",
-	"description": "",
-	"type": "module",
-	"keywords": [],
-	"author": "",
+	"name": "@mercuryworkshop/scramjet",
+	"version": "2.0.67-alpha.1",
 	"license": "AGPL-3.0-only",
-	"packageManager": "pnpm@10.12.1",
-	"scripts": {
-		"build": "rspack build",
-		"build:dreamland": "cd external/dreamlandjs && pnpm build",
-		"build:chrome": "cd packages/chrome && pnpm build",
-		"rewriter:build": "cd packages/scramjet/packages/core && pnpm run rewriter:build",
-		"dev": "node --no-warnings=ExperimentalWarning devserver.ts",
-		"eslint": "node scripts/eslint-cli.mjs",
-		"lint": "pnpm eslint .",
-		"watch": "rspack build --watch",
-		"format": "prettier --write .",
-		"preinstall": "npx only-allow pnpm",
-		"ii": "pnpm install && pnpm -C packages/scramjet install",
-		"runway": "pnpm -C packages/scramjet/packages/runway"
+	"description": "An experimental web proxy that aims to be the successor to Ultraviolet",
+	"type": "module",
+	"types": "./dist/types/index.d.ts",
+	"main": "./dist/scramjet-external.mjs",
+	"module": "./dist/scramjet-external.mjs",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com"
 	},
-	"pnpm": {
-		"patchedDependencies": {
-			"htmlparser2@12.0.0": "packages/scramjet/patches/htmlparser2@12.0.0.patch"
+	"scripts": {
+		"build": "cd ../.. && rspack build --mode production",
+		"rewriter:build": "cd rewriter/wasm/ && bash build.sh && cd ../../",
+		"dev": "node server.js",
+		"dev:debug": "DEBUG=1 node server.js",
+		"prepack": "RELEASE=1 npm run rewriter:build && npm run build",
+		"pub": "pnpm publish --no-git-checks --access public",
+		"format": "prettier --write .",
+		"format:docs": "remark \"docs/**/*.{md,mdx}\" --output",
+		"lint": "eslint ./src/",
+		"lint:fix": "eslint ./src/ --fix",
+		"lint:workflows": "actionlint .github/workflows/*.yml",
+		"lint:all": "npm run lint && npm run lint:workflows",
+		"test": "npm run test:package",
+		"test:package": "ava tests/ci/packageValidation.js",
+		"preinstall": "npx only-allow pnpm"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/types/typesEntry.d.ts",
+			"default": "./dist/scramjet-external.mjs"
+		},
+		"./path": {
+			"types": "./lib/index.d.ts",
+			"default": "./lib/index.cjs"
+		},
+		"./bundled": {
+			"types": "./dist/types/index.d.ts",
+			"default": "./dist/scramjet.mjs"
+		},
+		"./bundled-wasm": {
+			"types": "./dist/types/index.d.ts",
+			"default": "./dist/scramjet_bundled.mjs"
 		}
 	},
-	"devDependencies": {
-		"@eslint/eslintrc": "^3.3.5",
-		"@eslint/js": "^10.0.1",
-		"@mercuryworkshop/wisp-js": "catalog:",
-		"@rsdoctor/rspack-plugin": "^1.4.0",
-		"@rspack/cli": "^1.5.8",
-		"@rspack/core": "^1.5.8",
-		"@typescript-eslint/eslint-plugin": "8.57.3-alpha.3",
-		"@typescript-eslint/parser": "8.57.3-alpha.3",
-		"bufferutil": "^4.0.9",
-		"chafa-wasm": "^0.3.1",
-		"chalk": "^5.6.2",
-		"ts-checker-rspack-plugin": "^1.1.6",
-		"vite": "^7.1.12"
+	"files": [
+		"dist",
+		"lib"
+	],
+	"keywords": [],
+	"author": "",
+	"ava": {
+		"files": [
+			"tests/ci/**/*.js"
+		],
+		"verbose": true
 	},
-	"dependencies": {
-		"eslint": "^10.1.0",
-		"prettier": "^3.6.2"
+	"devDependencies": {
+		"@eslint/eslintrc": "^3.3.1",
+		"@eslint/js": "^9.35.0",
+		"@estruyf/github-actions-reporter": "^1.10.0",
+		"@fastify/static": "^8.2.0",
+		"@mercuryworkshop/wisp-js": "^0.4.0",
+		"@nebula-services/bare-server-node": "^2.0.4",
+		"@types/eslint": "^9.6.1",
+		"@types/estree": "^1.0.8",
+		"@types/node": "^24.3.1"
 	}
 }
