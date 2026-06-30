@@ -1,4 +1,4 @@
-{
+  {
 	"name": "browser.js",
 	"version": "1.0.1",
 	"description": "",
@@ -19,16 +19,12 @@
 		"format": "prettier --write .",
 		"preinstall": "npx only-allow pnpm",
 		"ii": "pnpm install && pnpm -C packages/scramjet install",
-		"runway": "pnpm -C packages/scramjet/packages/runway"
-	},
-	"pnpm": {
-		"overrides": {
-			"htmlparser2": "12.0.0"
-		},
-		"patchedDependencies": {
-		"htmlparser2@12.0.0": "packages/scramjet/patches/htmlparser2@12.0.0.patch",
-	}
-	},
+		"runway": "pnpm -C packages/scramjet/packages/runway""pnpm": {
+    "patchedDependencies": {
+      "htmlparser2@12.0.0": "packages/scramjet/patches/htmlparser2@12.0.0.patch"
+    }
+  }
+	
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.3.5",
 		"@eslint/js": "^10.0.1",
